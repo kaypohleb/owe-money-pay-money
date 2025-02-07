@@ -2,6 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  @font-face {
+    font-family: "Microsoft Sans Serif";
+    src: url(./assets/fonts/MS-Sans-Serif.ttf);
+  }
+  @font-face {
+    font-family: "Cascadia Code Mono";
+    src: url(./assets/fonts/CascadiaMono.ttf);
+  }
+}
+
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -14,8 +26,28 @@
   }
 }
 
+html, body {
+  height: 100%;
+}
+
 body {
   color: var(--foreground);
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+.input-wrap {
+  position: relative;
 }

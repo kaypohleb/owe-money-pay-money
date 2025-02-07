@@ -1,101 +1,153 @@
-import Image from "next/image";
+"use client";
+
+import { useState } from "react";
+import { Item } from "./globals";
+import ItemMachine from "./components/machines/itemMachine";
+import PeopleMachine from "./components/machines/peopleMachine";
+import FoodMachine from "./components/machines/foodMachine";
+import SummaryMachine from "./components/machines/summaryMachine";
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [start, setStart] = useState(false);
+  const [step, setStep] = useState(0);
+  const [items, setItems] = useState<Array<Item>>([]);
+  const [itemsShared, setItemsShared] = useState<{
+    [key: string]: Array<string>;
+  }>({});
+  const [peopleShared, setPeopleShared] = useState<{
+    [key: string]: Array<string>;
+  }>({});
+  const [tempItem, setTempItem] = useState<Item>({
+    name: "",
+    price: 0,
+    quantity: 1,
+  });
+  const [itemCount, setItemCount] = useState(0);
+  const [taxMode, setTaxMode] = useState(0);
+  const [taxValue, setTaxValue] = useState(0);
+  const [people, setPeople] = useState<Array<string>>([]);
+  const [tempHost, setTempHost] = useState<string>("");
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  function onItemChange(e: string | number | null, key: string) {
+    setTempItem((prev) => ({ ...prev, [key]: e }));
+  }
+
+  function onItemAdd() {
+    if (tempItem.price == 0 || tempItem.quantity == 0) return;
+    if (tempItem.name == "") tempItem.name = "Item " + itemCount;
+    setItems((prev) => [...prev, tempItem]);
+    setTempItem({ name: "", price: 0, quantity: 1 });
+    setItemCount((prev) => prev + 1);
+    console.log("added");
+  }
+
+  function nextStep() {
+    setStep((prev) => prev + 1);
+  }
+
+  function prevStep() {
+    setStep((prev) => prev - 1);
+  }
+
+  function getStepMachine() {
+    switch (step) {
+      case 0:
+        return (
+          <ItemMachine
+            items={items}
+            tempItem={tempItem}
+            itemCount={itemCount}
+            taxMode={taxMode}
+            taxValue={taxValue}
+            setTaxMode={setTaxMode}
+            setTaxValue={setTaxValue}
+            onItemChange={onItemChange}
+            onItemAdd={onItemAdd}
+            nextStep={nextStep}
+          />
+        );
+      case 1:
+        return (
+          <PeopleMachine
+            people={people}
+            addPerson={(name: string) => setPeople((prev) => [...prev, name])}
+            removePerson={(name: string) =>
+              setPeople((prev) => prev.filter((person) => person !== name))
+            }
+            prevStep={prevStep}
+            nextStep={nextStep}
+          />
+        );
+      case 2:
+        return (
+          <FoodMachine
+            persons={people}
+            items={items}
+            peopleShared={peopleShared}
+            itemShared={itemsShared}
+            setPeopleShared={(e: { [key: string]: Array<string> }) =>
+              setPeopleShared(e)
+            }
+            setItemShared={(e: { [key: string]: Array<string> }) =>
+              setItemsShared(e)
+            }
+            prevStep={prevStep}
+            nextStep={nextStep}
+          />
+        );
+      case 3:
+        return (
+          <SummaryMachine
+            people={people}
+            items={items}
+            tax={taxValue}
+            peopleShared={peopleShared}
+            itemsShared={itemsShared}
+          />
+        );
+    }
+  }
+
+  return (
+    <main className="w-full min-h-full-footer flex flex-col justify-center items-center p-8 ">
+      {start ? (
+        getStepMachine()
+      ) : (
+        <div className="flex flex-col items-center justify-center text-brightlime">
+          <hr className="w-full border-brightlime"></hr>
+          <pre>{"  $$$$$$$     $$$$$$$$  $$$$$$$$   $$$$$$$$  "}</pre>
+          <pre>{" $$     $$   $$  $$     $$     $$ $$  $$     "}</pre>
+          <pre>{" $$     $$   $$  $$     $$     $$ $$  $$     "}</pre>
+          <pre>{" $$     $$    $$$$$$$$  $$$$$$$$   $$$$$$$$  "}</pre>
+          <pre>{" $$     $$       $$  $$ $$            $$  $$ "}</pre>
+          <pre>{" $$     $$   $$  $$  $$ $$        $$  $$  $$ "}</pre>
+          <pre>{"  $$$$$$$     $$$$$$$$  $$         $$$$$$$$  "}</pre>
+          <hr className="w-full border-brightlime"></hr>
+          <br />
+          <span className="text-gray-400 text-center">
+            splitting hairs for a large bill <br /> or just dim sum
+          </span>
+
+          <input
+            placeholder="enter your name"
+            value={tempHost}
+            className="my-4 w-full bg-transparent border-b outline-none py-1 text-center text-white"
+            onChange={(e) => setTempHost(e.currentTarget.value.toUpperCase())}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                setPeople((prev) => [...prev, tempHost]);
+                setStart(true);
+                return;
+              }
+            }}
+          />
+          {tempHost ? (
+            <div className="animate-pulse text-white">
+              &quot;press enter when done&quot;
+            </div>
+          ) : null}
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+      )}
+    </main>
   );
 }

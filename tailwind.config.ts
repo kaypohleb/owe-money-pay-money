@@ -8,9 +8,17 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        mono: ["Cascadia Code Mono"]
+      },
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        brightlime: "#00FF00",
+      },
+      height:{
+        "full-footer": "calc(100% - 3rem)"
+      },
+      minHeight:{
+        "full-footer": "calc(100% - 3rem)"
       },
     },
   },
