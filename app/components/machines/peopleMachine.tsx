@@ -13,9 +13,9 @@ function PeopleMachine({
   prevStep: () => void;
   nextStep: () => void;
 }) {
+  const [tempHost, setTempHost] = useState<string>("");
   const [tempPerson, setTempPerson] = useState<string>("");
-  return (
-    <div className="max-w-[500px] flex flex-col gap-4 w-full">
+  return people.length > 0 ? (<div className="max-w-[500px] flex flex-col gap-4 w-full">
       {people.map((person, index) => {
         return (
           <div
@@ -37,6 +37,7 @@ function PeopleMachine({
               </button>
             )}
           </div>
+
         );
       })}
       <div className="grid grid-cols-5 items-center w-full gap-2">
@@ -73,13 +74,38 @@ function PeopleMachine({
         </button>
         <button
           className="px-2 py-1 w-full border border-brightlime  hover:border-lime-400 active:border-white text-brightlime hover:text-lime-400 active:text-white"
-          onClick={nextStep}
+          onClick={
+            people.length > 1
+              ? nextStep
+              : () => {alert("Please add more people");}
+          }
         >
           Next Step
         </button>
       </div>
-    </div>
-  );
+    </div> ):(
+      <div>
+        <input
+            placeholder="enter Payer's name"
+            value={tempHost}
+            className="my-4 w-full bg-transparent border-b outline-none py-1 text-center text-white"
+            onChange={(e) => setTempHost(e.currentTarget.value.toUpperCase())}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+              addPerson(tempHost);
+                
+                return;
+              }
+            }}
+          />
+          
+          {tempHost ? (
+            <div className="animate-pulse text-white">
+              &quot;press enter when done&quot;
+            </div>
+          ) : null}
+      </div>
+    );
 }
 
 export default PeopleMachine;

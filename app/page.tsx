@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { Item } from "./globals";
 import ItemMachine from "./components/machines/itemMachine";
 import PeopleMachine from "./components/machines/peopleMachine";
 import FoodMachine from "./components/machines/foodMachine";
 import SummaryMachine from "./components/machines/summaryMachine";
+import { runOCRish } from "./gemini";
 
 export default function Home() {
   const [start, setStart] = useState(false);
@@ -23,12 +24,47 @@ export default function Home() {
     quantity: 1,
   });
   const [itemCount, setItemCount] = useState(0);
-  const [taxMode, setTaxMode] = useState(0);
   const [taxValue, setTaxValue] = useState(0);
+  const [receiptLoading, setReceiptLoading] = useState(false);
+  const [serviceCharge, setServiceCharge] = useState(0);
+  const [otherCharge, setOtherCharge] = useState(0);
   const [people, setPeople] = useState<Array<string>>([]);
-  const [tempHost, setTempHost] = useState<string>("");
 
-  function onItemChange(e: string | number | null, key: string) {
+  function handleImageChange(e: ChangeEvent<HTMLInputElement>){
+    if(!e.target.files) return;
+    const file = e.target.files[0];
+    setReceiptLoading(true);
+    runOCRish(file).then((res) => {
+      console.log(res);
+      const re = /\{(.*)\}/gm
+      const matches = res.match(re);
+      console.log(matches)
+      if(!matches) return;
+      const newItems: Array<Item> = [];
+      matches.map((match) => {
+        const temp = JSON.parse(match);
+        
+        const itemList = temp["items"];
+        if(!itemList) return;
+        itemList.map((item: {name: string, price: number}) => {
+          newItems.push({name: item.name, price: item.price, quantity: 1});
+        });
+      });
+      setReceiptLoading(false);
+      setItems(newItems);
+      setItemCount((prev) => prev + newItems.length);
+      setStart(true);
+    });
+}
+
+  function onItemChange(e: Item, key: number) {
+    setItems((prev) => {
+      prev[key] = e;
+      return prev;
+    });
+  }
+
+  function onTempItemChange(e: string | number | null, key: string) {
     setTempItem((prev) => ({ ...prev, [key]: e }));
   }
 
@@ -56,12 +92,14 @@ export default function Home() {
           <ItemMachine
             items={items}
             tempItem={tempItem}
-            itemCount={itemCount}
-            taxMode={taxMode}
             taxValue={taxValue}
-            setTaxMode={setTaxMode}
+            serviceCharge={serviceCharge}
             setTaxValue={setTaxValue}
+            setServiceCharge={setServiceCharge}
             onItemChange={onItemChange}
+            onTempItemChange={onTempItemChange}
+            otherCharge={otherCharge}
+            setOtherCharge={setOtherCharge}
             onItemAdd={onItemAdd}
             nextStep={nextStep}
           />
@@ -127,25 +165,20 @@ export default function Home() {
           <span className="text-gray-400 text-center">
             splitting hairs for a large bill <br /> or just dim sum
           </span>
-
-          <input
-            placeholder="enter your name"
-            value={tempHost}
-            className="my-4 w-full bg-transparent border-b outline-none py-1 text-center text-white"
-            onChange={(e) => setTempHost(e.currentTarget.value.toUpperCase())}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                setPeople((prev) => [...prev, tempHost]);
-                setStart(true);
-                return;
-              }
-            }}
-          />
-          {tempHost ? (
-            <div className="animate-pulse text-white">
-              &quot;press enter when done&quot;
+          <br />
+          { receiptLoading ? <span className="text-brightlime">Loading...</span> : 
+          (
+            <div className="flex flex-col items-center justify-center">
+              <button className="px-2 py-2 w-full border border-brightlime hover:border-lime-400 active:border-white text-brightlime hover:text-lime-400 active:text-white mb-4" onClick={() => setStart(true)}>
+              Start
+              </button>
+            <label htmlFor="image-upload" className="px-2 py-2 w-full border border-brightlime hover:border-lime-400 active:border-white text-brightlime hover:text-lime-400 active:text-white text-center">
+              Receipt Upload
+            </label>
+            <input id="image-upload" type="file" accept="image/*"  className="hidden"
+              onChange={(e) => handleImageChange(e)}/>
             </div>
-          ) : null}
+          )}
         </div>
       )}
     </main>

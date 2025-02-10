@@ -55,10 +55,10 @@ function SummaryMachine({
         className="mt-4 px-2 py-1 border border-brightlime hover:border-lime-400 active:border-white text-brightlime hover:text-lime-400 active:text-white"
         onClick={() => {
           //create Text
-          let text = `Payee Summary\n`;
+          let text = `Pay to ${people[0]}\n`;
           text += `Horizontal: ${sharedItemPricePerPerson[people[0]].toFixed(2)}\n`;
           people.map((person, index) => {
-            if (!index) return null;
+            if (index == 0) return null;
             text += `${person} : ${sharedItemPricePerPerson[person].toFixed(2)}\n`;
           });
           //copy to clipboard
