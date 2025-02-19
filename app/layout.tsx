@@ -29,7 +29,15 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased w-full h-full font-mono`}
       >
         {children}
-        <footer className="w-full h-12 flex gap-6 flex-wrap items-center justify-end py-2 px-4">
+        <footer className="w-full h-12 flex gap-6 flex-wrap items-center justify-between py-2 px-4">
+          <a 
+              className="flex items-center gap-2 hover:underline hover:underline-offset-4"
+            href="https://buymeacoffee.com/kaypohleb"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Buy me a coffee
+          </a>
           <a
             className="flex items-center gap-2 hover:underline hover:underline-offset-4"
             href="https://kaypohleb.com"

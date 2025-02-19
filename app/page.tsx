@@ -2,10 +2,10 @@
 
 import { ChangeEvent, useState } from "react";
 import { Item } from "./globals";
-import ItemMachine from "./components/machines/itemMachine";
-import PeopleMachine from "./components/machines/peopleMachine";
-import FoodMachine from "./components/machines/foodMachine";
-import SummaryMachine from "./components/machines/summaryMachine";
+import ItemMachine from "@components/machines/itemMachine";
+import PeopleMachine from "@components/machines/peopleMachine";
+import FoodMachine from "@components/machines/foodMachine";
+import SummaryMachine from "@components/machines/summaryMachine";
 import { runOCRish } from "./gemini";
 
 export default function Home() {

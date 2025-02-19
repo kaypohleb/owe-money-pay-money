@@ -33,7 +33,7 @@ export async function fileToGenerativePart(file: File): Promise<InlineDataPart> 
 
 export async function runOCRish(file: File) {
     
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
     
     const prompt = 'Given this image of a transactional receipt: find and retrieve all items and their corresponding quantity and prices (with discounted prices if discounted) in a JSON schema of {"items": [{"name":str, "price":number,"quantity": number}]}';
   
