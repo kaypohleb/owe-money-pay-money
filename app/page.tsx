@@ -151,7 +151,7 @@ export default function Home() {
       {start ? (
         getStepMachine()
       ) : (
-        <div className="flex flex-col items-center justify-center text-brightlime">
+        <div className="flex flex-col items-center justify-center text-brightlime text-[12px]">
           <hr className="w-full border-brightlime"></hr>
           <pre>{"  $$$$$$$     $$$$$$$$  $$$$$$$$   $$$$$$$$  "}</pre>
           <pre>{" $$     $$   $$  $$     $$     $$ $$  $$     "}</pre>
