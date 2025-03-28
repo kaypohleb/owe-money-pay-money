@@ -1,4 +1,38 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# O$P$
+https://owe-money-pay-money.vercel.app/
+## Overview
+O$P$ is a web application designed to help you easily split shared costs from a receipt among multiple people. Whether you're splitting a dinner bill, groceries, or even a group outing, this tool ensures that each person only pays for their fair share.
+
+No more awkward moments trying to figure out who owes what. Just upload your receipt, and the app will do the math for you. Perfect for group meals, outings, and any situation where you’re trying to divide costs between friends, family, or coworkers.
+
+## Features
+Easy Receipt Upload: Simply upload an image of your receipt, and the app will automatically extract the items.
+
+Easy Item Add: Simply add a name, quantity, and price amount
+
+Split by Items: Users can manually tag shared items to themselves by passing the phone around.
+
+Automatic Calculation: The app calculates how much each person owes or how much they need to pay to the Payer.
+
+Simple & Intuitive Interface: No complicated forms or difficult navigation. Everything is easy to access and use.
+
+How It Works
+1. Upload Receipt/Add Items
+Upload a photo of your receipt. The app will automatically read the receipt to extract the itemized list of purchases or you can manually add them
+
+2. Add People
+Add the individuals who are part of the shared bill. You can either simply enter their names
+
+3. Split the Bill
+By Item: Assign individual items to specific people. The app will calculate their share of the cost.
+
+4. Get the Final Summary
+Once the calculations are done, you’ll receive a final summary, detailing each person’s contribution and balance.
+
+Tech Stack
+Frontend: Next.js/React.js
+
+OCR: Gemini for receipt scanning
 
 ## Getting Started
 
