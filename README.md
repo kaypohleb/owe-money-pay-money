@@ -1,4 +1,5 @@
 # O$P$
+![image](https://github.com/user-attachments/assets/7eac31ac-44ec-44bc-a39b-b6288bc3e74e)
 https://owe-money-pay-money.vercel.app/
 ## Overview
 O$P$ is a web application designed to help you easily split shared costs from a receipt among multiple people. Whether you're splitting a dinner bill, groceries, or even a group outing, this tool ensures that each person only pays for their fair share.
